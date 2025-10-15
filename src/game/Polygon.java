@@ -71,6 +71,22 @@ class Polygon {
     }
     return crossingNumber%2 == 1;
   }
+
+  /**
+   * collides:
+   * Checks if this polygon collides with another.
+   * It does so by checking if this polygon contains
+   * any point from polygon Other.
+   */
+  public boolean collides(Polygon Other){
+    Point[] otherPoints = Other.getPoints();
+    for(Point p:otherPoints){
+      if(this.contains(p)){
+        return true;
+      }
+    }
+    return false;
+  }
   
   public void rotate(int degrees) {rotation = (rotation+degrees)%360;}
   

@@ -8,9 +8,9 @@ NOTE: This class is the metaphorical "main method" of your program,
 
 */
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 
 class SugarDash extends Game {
 
@@ -20,6 +20,8 @@ class SugarDash extends Game {
 	/** Polygon for Floor */
 	private Polygon floor;
 
+	private Obstacle obstacle;
+
 	/** Floor Height */
 	private static final int FLOOR_Y  = 500;
 	/** Player X Offset */
@@ -27,12 +29,23 @@ class SugarDash extends Game {
 	/** Player Side Length */
 	private static final int PLAYER_SIDE_LENGTH = 40;
 	
+	/** Coffee Height */
+	private static final int COFFEE_HEIGHT = 50;
+	/** Coffee Bottom */
+	private static final int COFFEE_BOTTOM = 30;
+	/** Coffee Height */
+	private static final int COFFEE_TOP = 50;
 
+	/** Score */
+	private static int score = 0;
+	/** Is Game Over */
+	private static boolean isGameOver = false;
 	public SugarDash() {
 		super("Sugar Dash!",800,600);
     	
 		player = new Player(new Point(PLAYER_X_OFFSET, FLOOR_Y-PLAYER_SIDE_LENGTH), PLAYER_SIDE_LENGTH);
-		
+		obstacle = new Obstacle(new Point(800, FLOOR_Y - COFFEE_HEIGHT), COFFEE_TOP, COFFEE_BOTTOM, COFFEE_HEIGHT);
+
 		Point[] floorShape = { new Point(0,0), new Point(width, 0), new Point(width , height - FLOOR_Y), new Point(0, height - FLOOR_Y)};
 		floor = new Polygon(floorShape, new Point(0,FLOOR_Y), 0);
 
@@ -42,23 +55,39 @@ class SugarDash extends Game {
 		this.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e){
-				if (e.getKeyCode() == KeyEvent.VK_UP){
+				if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyChar() == 'w' || e.getKeyChar() == 'W' || e.getKeyCode() == KeyEvent.VK_SPACE){
 					player.jump();
 				}
 			}
 		});
+
+		
   	}
   
 	@Override
 	public void paint(Graphics brush) {
-    	brush.setColor(new Color (20,20,40));
-    	brush.fillRect(0,0,width,height);
-    	
-		player.update(FLOOR_Y);
+		if(!isGameOver){
+			brush.setColor(new Color (20,20,40));
+			brush.fillRect(0,0,width,height);
+			
+			player.update(FLOOR_Y);
+			player.paint(brush);
 
-		player.paint(brush);
+			obstacle.update(score);
+			score += 1;
+			obstacle.paint(brush);
 
-		Paint(brush, floor, new Color(0,0,0));
+			if(player.collides(obstacle)){
+				isGameOver = true;
+			}
+
+			Paint(brush, floor, new Color(0,0,0));
+		}
+		else{
+			brush.setColor(Color.WHITE);
+			brush.setFont(new Font("TimesRoman", Font.PLAIN, 50)); 
+			brush.drawString("Game Over!", 250, 250);
+		}
 
   	}
 	
