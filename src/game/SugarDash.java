@@ -28,6 +28,8 @@ class SugarDash extends Game {
     private Obstacle obstacle;
     /** Stopwatch for tracking game time */
     private Stopwatch gameTimer;
+	/** Invuln powerup Object */
+	private Obstacle.InvulnerabilityPowerUp powerUp;
 
 	/** ArrayList for Props */
 	private ArrayList<Props> stars;
@@ -40,6 +42,8 @@ class SugarDash extends Game {
     private static final int COFFEE_HEIGHT = 50;
     private static final int COFFEE_BOTTOM = 30;
     private static final int COFFEE_TOP = 50;
+	private static final int INVULN_MS = 5000;
+	private static final int POWERUP_SIDE_LENGTH = 20;
 
     // Game State Variables
     private int score = 0;
@@ -49,6 +53,8 @@ class SugarDash extends Game {
     private String finalTimeFormatted;
     private String bestTimeFormatted = "00:00:000";
     private boolean isGameOver = false;
+	private boolean isInvulnerable = false;
+	private static double invulnStartTime = 0;
 
 
 
@@ -133,6 +139,7 @@ class SugarDash extends Game {
 		player = new Player(new Point(PLAYER_X_OFFSET, FLOOR_Y-PLAYER_SIDE_LENGTH), PLAYER_SIDE_LENGTH);
 		obstacle = new Obstacle(new Point(800, FLOOR_Y - COFFEE_HEIGHT), COFFEE_TOP, COFFEE_BOTTOM, COFFEE_HEIGHT);
 		gameTimer = new Stopwatch();
+		powerUp = obstacle.new InvulnerabilityPowerUp(new Point(800, FLOOR_Y - POWERUP_SIDE_LENGTH), POWERUP_SIDE_LENGTH);
 
 		Point[] floorShape = { new Point(0,0), new Point(width, 0), new Point(width , height - FLOOR_Y), new Point(0, height - FLOOR_Y)};
 		floor = new Polygon(floorShape, new Point(0,FLOOR_Y), 0);
@@ -185,6 +192,8 @@ class SugarDash extends Game {
 		player.setRotation(0);
 		obstacle.setHasBeenScored(false);
 		obstacle.position.x = 800;
+		powerUp.setVisibility(false);
+		isInvulnerable = false;
 
 		score = 0;
 		moveMultiplier = 0;
@@ -238,15 +247,47 @@ class SugarDash extends Game {
 			moveMultiplier += 1;
 			obstacle.paint(brush);
 
+			powerUp.update(moveMultiplier);
+			powerUp.paint(brush);
 
-			if(player.collides(obstacle)){
+			if(!isInvulnerable && player.collides(obstacle)){
 				gameOver();
 			}
 
             if (obstacle.getXPos() < PLAYER_X_OFFSET && !obstacle.getHasBeenScored()) {
                 score++;
                 obstacle.setHasBeenScored(true);
+				if(Math.random() < 0.1){
+					powerUp.moveToStart();
+					powerUp.setVisibility(true);
+					powerUp.paint(brush);
+					// System.out.println("Random check");
+				}
             }
+
+			
+
+			// powerup collision | getVisibility returns true if visible
+			if(player.collides(powerUp) && powerUp.getVisibility()){
+				isInvulnerable = true;
+				invulnStartTime = System.currentTimeMillis();
+				powerUp.setVisibility(false);
+				powerUp.paint(brush);
+			}
+
+			// display to user that they are invulnerable
+			if(isInvulnerable){
+				brush.setColor(Color.WHITE);
+				brush.setFont(new Font("Monospaced", Font.PLAIN, 20));
+				brush.drawString("Invulnerable!", width / 2 - 50, height / 2 - 100);
+			}
+
+			// when time runs out, change state back
+			if(isInvulnerable && System.currentTimeMillis() > invulnStartTime + INVULN_MS){
+				isInvulnerable = false;
+
+			}
+
 			
 			brush.setColor(Color.WHITE);
             brush.setFont(new Font("Monospaced", Font.BOLD, 20));
