@@ -5,10 +5,10 @@ import java.awt.Graphics;
 public class Player extends Polygon{
     
     /** Falling Gravity. */
-    private static final double GRAVITY = 0.5;
+    private static final double GRAVITY = 0.4;
 
     /** Initial Jump Velocity */
-    private static final double JUMPVEL = -18.0;
+    private static final double JUMPVEL = -14.0;
 
     /** Number of Frames during Jump */
     private static final double JUMPFRAMES = (-2 * JUMPVEL) / GRAVITY;
@@ -63,6 +63,10 @@ public class Player extends Polygon{
                 this.rotation = (initial_theta + 90) % 360;
             }
         }
+    }
+
+    public void setRotation (double theta){
+        this.rotation = theta;
     }
 
     /**
