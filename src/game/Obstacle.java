@@ -2,7 +2,14 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 
-
+/**
+ * Obstacle is the class which defines the obstacles present in the SugarDash game.
+ * It extends <a href="#{@link}">{@link Polygon}</a> and implements
+ * <a href="#{@link}">{@link Moveable_x}</a>. It is 
+ * @author Augniv Mitra
+ * @author James Hui
+ * @version %I% %G%
+ */
 public class Obstacle extends Polygon implements Moveable_x {
 
     public class InvulnerabilityPowerUp extends Polygon implements Moveable_x{

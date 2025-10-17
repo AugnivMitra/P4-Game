@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
+import java.util.function.DoubleSupplier;
 
 
 
@@ -72,12 +72,19 @@ class SugarDash extends Game {
 		/** Saved Times */
 		private static ArrayList<Double> timeArr; 
 
+		public DoubleSupplier getElapsedTimeNano;
 
 		/** Constructor */
 		public Stopwatch(){
 			startTime = 0;
 			isRunning = false;
 			timeArr = new ArrayList<Double>();
+			getElapsedTimeNano = () -> {
+				if (isRunning){
+					return System.nanoTime() - startTime;
+				}
+				return elapsedTime;
+		};
 
 		}
 
@@ -101,14 +108,6 @@ class SugarDash extends Game {
 			elapsedTime = 0;
 			startTime = 0;
 			isRunning = false;
-		}
-
-		/** Return ElapsedTime in Nanoseconds*/
-		public double getElapsedTimeNano(){
-			if (isRunning){
-				return System.nanoTime() - startTime;
-			}
-			return elapsedTime;
 		}
 
 		/** Get Formatted Time for String */
@@ -219,7 +218,7 @@ class SugarDash extends Game {
 		}
 
 
-		finalTimeFormatted = gameTimer.getFormattedTime(gameTimer.getElapsedTimeNano());
+		finalTimeFormatted = gameTimer.getFormattedTime(gameTimer.getElapsedTimeNano.getAsDouble());
 	}
   
 	@Override
@@ -292,7 +291,7 @@ class SugarDash extends Game {
 			brush.setColor(Color.WHITE);
             brush.setFont(new Font("Monospaced", Font.BOLD, 20));
             brush.drawString("Score: " + score, width - 250, 30);
-            brush.drawString("Time: " + gameTimer.getFormattedTime(gameTimer.getElapsedTimeNano()), width - 250, 55);
+            brush.drawString("Time: " + gameTimer.getFormattedTime(gameTimer.getElapsedTimeNano.getAsDouble()), width - 250, 55);
 
 		}
 		else{
