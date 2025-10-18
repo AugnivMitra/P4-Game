@@ -5,23 +5,39 @@ import java.awt.Graphics;
 /**
  * Obstacle is the class which defines the obstacles present in the SugarDash game.
  * It extends <a href="#{@link}">{@link Polygon}</a> and implements
- * <a href="#{@link}">{@link Moveable_x}</a>. It is 
+ * <a href="#{@link}">{@link Moveable_x}</a>. It is a white, upside-down isosceles trapezoid.
+ * If the player contacts it and is not invincible, the game is ended.
+ * It loops across the canvas from right-to-left.
  * @author Augniv Mitra
  * @author James Hui
  * @version %I% %G%
  */
 public class Obstacle extends Polygon implements Moveable_x {
 
+    /**
+     * InvulnerabilityPowerUp is the class which defines the power-ups present in the SugarDash game.
+     * It is an inner class of <a href="#{@link}">{@link Obstacle}</a>
+     * It extends <a href="#{@link}">{@link Polygon}</a> and implements
+     * <a href="#{@link}">{@link Moveable_x}</a>. It is a yellow square.
+     * When the player contacts it, they are granted 5 seconds of invulnerability.
+     * It has a 10% chance of appearing for every obstacle passed.
+     * @author Augniv Mitra
+     * @author James Hui
+     * @version %I% %G%
+     */
     public class InvulnerabilityPowerUp extends Polygon implements Moveable_x{
 
         private boolean visibility = false;
         private int side_length;
 
         /**
-         * InvulnerabilityPowerUp Constructor:
-         * Inherits Polygon and Moveable_X Constructor, is an 
+         * InvulnerabilityPowerUp 
+         * inherits Polygon and Moveable_X Constructor, and is an 
          * inner class of Obstacle. 
-         * Takes in a starting point & side length
+         * Takes in a starting point and side length, and creates a square polygon
+         * at that starting point with that side length.
+         * @param startPosition where the power-up is at first (before updates)
+         * @param side_length specifies length of sides of powerup, in pixels
          */
         public InvulnerabilityPowerUp(Point startPosition, int side_length){
             super(new Point[]{
@@ -49,7 +65,10 @@ public class Obstacle extends Polygon implements Moveable_x {
             }
         }
 
-        /** Draws powerup on the canvas. */
+        /** 
+         * Draws powerup on the canvas. 
+         * @param brush the brush that is being used to draw on the game's canvas
+         * */
         public void paint(Graphics brush){
             if(visibility){
                 // Get current verticies
@@ -71,17 +90,25 @@ public class Obstacle extends Polygon implements Moveable_x {
 
         }
 
-        /** Returns true if the powerup is visible, false otherwise. */
+        /** Returns visibility of the powerup. 
+         * @return true if the powerup is visible, false otherwise
+        */
         public boolean getVisibility(){
             return visibility;
         }
 
-        /** Sets the visibility of the powerup to the parameter. */
+        /** 
+         * Sets the visibility of the powerup to the parameter. 
+         * @param vis true or false; visible or not
+         * */
         public void setVisibility(boolean vis){
             this.visibility = vis;
         }
 
-        /** Moves the x-position of the powerup back to the front. */
+        /** 
+         * Moves the x-position of the powerup back to the front of the canvas,
+         * which is 800 pixels to the right. 
+         */
         public void moveToStart(){
             position.x = 800;
         }
@@ -96,14 +123,14 @@ public class Obstacle extends Polygon implements Moveable_x {
     private boolean hasBeenScored;
 
     /**
-     * Obstacle Constructor:
-     * Inherits Polygon and Moveable_X Constructor. 
-     * Creates an upside-down isosceles trapezoidal polygon
-     * based on the parameters.
-     * @param startPosition: Point
-     * @param top_size: int
-     * @param bottom_size: int
-     * @param height: int
+     * Obstacle constructor, inheriting Polygon and Moveable_X Constructor. 
+     * Takes in a starting point and size parameters, and creates an
+     * isosceles trapezoidal polygon based on these paremeters at the specified
+     * starting point.
+     * @param startPosition: Starting position of the Obstacle
+     * @param top_size: Size of the top base of the Obstacle, in pixels
+     * @param bottom_size: Size of the bottom base of the Obstacle, in pixels
+     * @param height: Height of the Obstacle, in pixels
      */
     public Obstacle(Point startPosition, int top_size, int bottom_size, int height){
         super(new Point[]{
@@ -115,9 +142,10 @@ public class Obstacle extends Polygon implements Moveable_x {
         this.top_size = top_size;
         this.hasBeenScored = false;
     }
-    /** 
-     * Draw obstacle on the canvas.
-     */
+     /** 
+     * Draws powerup on the canvas. 
+     * @param brush the brush that is being used to draw on the game's canvas
+     * */
     public void paint(Graphics brush){
 
         // Get current verticies
@@ -138,7 +166,9 @@ public class Obstacle extends Polygon implements Moveable_x {
 
     }
     
-    /** Returns the x-position of the obstacle */
+    /** Returns the x-position of the obstacle 
+     * @return The x-position of the obstacle, in pixels
+    */
     public double getXPos(){
         return position.x;
     }
@@ -158,12 +188,16 @@ public class Obstacle extends Polygon implements Moveable_x {
         }
     }
 
-    /** Returns if the obstacle has been passed by the player or not. */
+    /** Returns if the obstacle has been passed by the player or not. 
+     * @return true if it has been scored, false if not
+    */
     public boolean getHasBeenScored (){
         return this.hasBeenScored;
     }
 
-    /** Sets the status of the obstacle being passed to the parameter. */
+    /** Sets the status of the obstacle being passed to the parameter. 
+     * @param status the scoring status of the obstacle - true if scored, false if not
+    */
     public void setHasBeenScored(boolean status) {
         this.hasBeenScored = status;
     }

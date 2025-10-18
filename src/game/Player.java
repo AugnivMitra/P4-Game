@@ -2,6 +2,15 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 
+/**
+ * Player is the class which defines the controllable player present in the SugarDash game.
+ * It extends <a href="#{@link}">{@link Polygon}</a>. It is a white square which upon the pressing
+ * of w, space, or the up arrow, jumps and rotates 90 degrees clockwise in the air
+ * in the same manner as the geometry dash cube.
+ * @author Augniv Mitra
+ * @author James Hui
+ * @version %I% %G%
+ */
 public class Player extends Polygon{
     
     /** Falling Gravity. */
@@ -28,17 +37,26 @@ public class Player extends Polygon{
     private int side_length;
 
     /**
-     * Player Constructor:
-     * Inherits Polygon Constructor, which includes the polygon vertics
-     * The polygon has a point as well which sets the left bottom corner
-     * Side Length can also be set
+     * Player is a <a href="#{@link}">{@link Polygon}</a> square with a side length
+     * of <code>side_length</code> placed initially at <code>startPosition</code>.
+     * @param startPosition a point where <code>Player</code> is placed initially.
+     * @param side_length the length of the side of the square polygon, in pixels.
      */
-
     public Player(Point startPosition, int side_length){
         super( new Point[]{ new Point(0,0), new Point(side_length, 0), new Point(side_length, side_length), new Point(0, side_length)}, startPosition, 0.0);
         this.side_length = side_length;
     }
 
+    /**
+     * Moves the position of this element along the y-axis, the amount of
+     * movement being based on a gravity constant and vertical velocity to 
+     * simulate the acceleration of gravity. While the player is jumping,
+     * rotates the cube. Once the cube falls back down to <code>floorY</code>,
+     * set rotation to 90 degrees clockwise and set vertical velocity to zero.
+     * 
+     * @param floorY the y-value of the floor where the player must land,
+     * in terms of pixels from the top of the canvas
+     */
     public void update(int floorY){
         // Apply gravity to velocity;
         playerVel += GRAVITY;
@@ -65,6 +83,10 @@ public class Player extends Polygon{
         }
     }
 
+    /**
+     * sets the rotation of the Player object to the parameter
+     * @param theta the new degree of rotation
+     */
     public void setRotation (double theta){
         this.rotation = theta;
     }
@@ -85,8 +107,9 @@ public class Player extends Polygon{
     }
 
     /** 
-     * Paint: draw the player on the canvas
-     */
+     * Draws player on the canvas. 
+     * @param brush the brush that is being used to draw on the game's canvas
+     * */
     public void paint(Graphics brush){
 
         // Get current verticies

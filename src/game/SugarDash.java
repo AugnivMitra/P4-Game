@@ -1,12 +1,7 @@
 package game;
 
-/*
-CLASS: YourGameNameoids
-DESCRIPTION: Extending Game, YourGameName is all in the paint method.
-NOTE: This class is the metaphorical "main method" of your program,
-      it is your control center.
 
-*/
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,7 +11,24 @@ import java.util.Random;
 import java.util.function.DoubleSupplier;
 
 
-
+/**
+ * SugarDash is the class containing the game logic, putting all other classes to use.
+ * It extends <a href="#{@link}">{@link Game}</a>. The game plays as follows.
+ * <p>
+ * The player is placed on the left side of the canvas, and coffee cup obstacles will come from
+ * the right side to the left. The player must jump over the coffee cups with W, space, or the up arrow
+ * or else the game will be ended.
+ * As time progresses, the obstacles move faster and faster.
+ * Every time the player clears an obstacle, there is a 10% chance that an invulnerability powerup appears
+ * which makes them unable to lose the game to obstacles for five seconds. When the game ends, the player
+ * is shown both the amount of time they survived and their time record for survival, and are given the option
+ * to reset. The game also has stars that are randomly drawn in the sky, with the stars variably dimming and
+ * brightening, and sugar packets moving in the ground from right to left.
+ * </p>
+ * @author Augniv Mitra
+ * @author James Hui
+ * @version %I% %G%
+ */
 class SugarDash extends Game {
 
 
@@ -57,7 +69,15 @@ class SugarDash extends Game {
 	private static double invulnStartTime = 0;
 
 
-
+	/**
+     * Stopwatch is a class defining a stopwatch for keeping track of game time.
+     * It is an inner class of <a href="#{@link}">{@link SugarDash}</a>.
+	 * It is used to track the time elapsed between its starting and stopping,
+	 * and stores previous times.
+     * @author Augniv Mitra
+     * @author James Hui
+     * @version %I% %G%
+     */
 	public class Stopwatch {
 
 		/** Start time of stopwatch in nanoseconds */
@@ -74,7 +94,10 @@ class SugarDash extends Game {
 
 		public DoubleSupplier getElapsedTimeNano;
 
-		/** Constructor */
+		/**
+		 * Initializes ArrayList of times, and uses lambda expression for
+		 * getting the amount of time elapsed between start and end.
+		 */
 		public Stopwatch(){
 			startTime = 0;
 			isRunning = false;
@@ -88,13 +111,13 @@ class SugarDash extends Game {
 
 		}
 
-		/** Start Stopwatch */
+		/** Starts the stopwatch tracking time elapsed. */
 		public void start(){
 			startTime = System.nanoTime();
 			isRunning = true;
 		}
 
-		/** Stop Stopwatch */
+		/** Stops the stopwatch from counting more time. */
 		public void stop(){
 			if (isRunning){
 				elapsedTime = System.nanoTime() - startTime;
@@ -103,14 +126,20 @@ class SugarDash extends Game {
 			}
 		}
 
-		/** Reset Time - stop timer, save time, reset time*/
+		/**
+		 * Resets the game timer
+		 */
 		public void reset(){
 			elapsedTime = 0;
 			startTime = 0;
 			isRunning = false;
 		}
 
-		/** Get Formatted Time for String */
+		/**
+		 * Formats the input time into human-readable format
+		 * @param totalTimeNano double representation of the system time in nanoseconds
+		 * @return String representation of <code>totalTimeNano</code> in format minutes:seconds:milliseconds
+		 */
 		public String getFormattedTime(double totalTimeNano){
 			
 			long totalMillis = (long) (totalTimeNano/1000000);
@@ -122,7 +151,10 @@ class SugarDash extends Game {
 			return String.format("%02d:%02d:%03d", minutes, seconds, millis);
 		}
 
-		/** Get Longest Time */
+		/**
+		 * gets the longest time the player has survived
+		 * @return double representation of the longest time that the player has survived
+		 */
 		public static double getLongestTime(){
 			if (timeArr.isEmpty()){
 				return 0.0;
@@ -132,6 +164,13 @@ class SugarDash extends Game {
 
 	}
 
+	/**
+	 * Initializes all objects necessary for the gameplay. This includes the player as Player,
+	 * the obstacles as Obstacle, the game's timer as Stopwatch, and the obstacle as 
+	 * InvulnerabilityPowerup. It also creates the polygon representation of the floor to
+	 * be drawn in paint. It also calls <code>{initializeProps}<code> to
+	 * create all props which will be drawn in paint.
+	 */
 	public SugarDash() {
 		super("Sugar Dash!",800,600);
     	
@@ -164,6 +203,10 @@ class SugarDash extends Game {
 		
   	}
 
+	/**
+	 * Creates & stores 20 stars and 5 props in their respective <Code>ArrayLists</code>
+	 * with random x-positions and bounded random y-positions.
+	 */
 	private void initializeProps() {
         stars = new ArrayList<>();
         sugarPackets = new ArrayList<>();
@@ -184,7 +227,7 @@ class SugarDash extends Game {
         }
     }
 
-	/** Reset Game to initial state*/
+	/** Resets Game to initial state, overwriting gamestate variables.*/
 	private void resetGame() {
 		player.position.x = PLAYER_X_OFFSET;
         player.position.y = FLOOR_Y - PLAYER_SIDE_LENGTH;
@@ -206,6 +249,10 @@ class SugarDash extends Game {
 
 	}
 
+	/** Handles logic for when the game ends.
+	 * Displays the user's current run time, their best time, and prompts
+	 * them to restart the game.
+	  */
 	private void gameOver(){
 		isGameOver = true;
 		gameTimer.stop();
@@ -221,7 +268,15 @@ class SugarDash extends Game {
 		finalTimeFormatted = gameTimer.getFormattedTime(gameTimer.getElapsedTimeNano.getAsDouble());
 	}
   
+	
 	@Override
+	/**
+	 * Handles game logic for drawing graphics onto canvas, painting the floor,
+	 * player, both prop types, obstacles, powerups, and game-over text. It also
+	 * checks for collision between the player and obstacles or powerups, and handles
+	 * their respective logic by modifying game state variables.
+	 * @param brush Used to paint on the game canvas
+	 */
 	public void paint(Graphics brush) {
 		if(!isGameOver){
 			brush.setColor(new Color (20,20,40));
@@ -315,6 +370,13 @@ class SugarDash extends Game {
 
   	}
 	
+	/**
+	 * Paints the game's ground onto the canvas, given a brush,
+	 * a Polygon to paint, and the color of the polygon
+	 * @param brush used to paint on the game's canvas
+	 * @param p the polygon to be put as the floor, should be a rectangle
+	 * @param c the color that the floor should be
+	 */
     public void paintFloor(Graphics brush, Polygon p, Color c){
         // Get current verticies
         Point[] points = p.getPoints();
