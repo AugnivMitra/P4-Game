@@ -250,7 +250,7 @@ class SugarDash extends Game {
 	}
 
 	/** Handles logic for when the game ends.
-	 * Displays the user's current run time, their best time, and prompts
+	 * Displays the user's current run time & score, their best time & score, and prompts
 	 * them to restart the game.
 	  */
 	private void gameOver(){
@@ -274,7 +274,8 @@ class SugarDash extends Game {
 	 * Handles game logic for drawing graphics onto canvas, painting the floor,
 	 * player, both prop types, obstacles, powerups, and game-over text. It also
 	 * checks for collision between the player and obstacles or powerups, and handles
-	 * their respective logic by modifying game state variables.
+	 * their respective logic by modifying game state variables. When the game is
+	 * over, it displays the game over text including current/best scores and times.
 	 * @param brush Used to paint on the game canvas
 	 */
 	public void paint(Graphics brush) {
